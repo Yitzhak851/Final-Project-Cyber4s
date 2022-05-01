@@ -29,3 +29,29 @@ table {
 .selected {
     background-color: aquamarine;
 }
+
+.alert.info {
+    background-color: #2196F3;
+    position: absolute;
+    position: center;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 700px;
+    height: 150px;
+    left: 40%;
+}
+
+
+.closebtn {
+    margin-left: 40px;
+    color: yellow;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
