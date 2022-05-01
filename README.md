@@ -2,5 +2,5 @@
 
 This 'repo' represents my final project on the 'pre-course' of 'Cyber 4S' :)
 
-[Link]() for quick viewing of the final product:
+[Link](http://127.0.0.1:5500/Final%20project%20-%20YBO/index.html) for quick viewing of the final product:
 
