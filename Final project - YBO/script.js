@@ -5,26 +5,20 @@ const BLACK_TYPE = 'black';
 const PAWN = 'pawn';
 const KING = 'king';
 
-var close = document.getElementsByClassName("closebtn");
-var i;
-
-for (i = 0; i < close.length; i++) {
-    close[i].onclick = function () {
-        var div = this.parentElement;
-        div.style.opacity = "0";
-        setTimeout(function () { div.style.display = "none"; }, 600);
-    }
-}
 
 let game;
 let selectedCell;
 
-function onCellClick(e) {
-    if (selectedCell !== undefined)
-        selectedCell.classList.remove('selected');
-
-    selectedCell = e.currentTarget;
-    selectedCell.classList.add('selected');
+function onCellClick(row, col) {
+    // selectedPiece - The current selected piece (selected in previous click)
+    // row, col - the currently clicked cell - it may be empty, or have a piece.
+    if (selectedPiece !== undefined && game.tryMove(selectedPiece, row, col)) {
+        selectedPiece = undefined;
+        // Recreate whole board - this is not efficient, but doesn't affect user experience
+        createChessBoard(game.boardData);
+    } else {
+        tryUpdateSelectedPiece(row, col);
+    }
 }
 
 function addImage(cell, type, name) {
@@ -32,6 +26,7 @@ function addImage(cell, type, name) {
     image.src = 'images/' + type + '/' + name + '.png';
     cell.appendChild(image);
 }
+
 
 function createCeckersBoard() {
     const table = document.createElement('table');
@@ -57,6 +52,34 @@ function createCeckersBoard() {
         }
     }
 }
+
+// function createChessBoard(boardData) {
+//     table = document.getElementById(CHESS_BOARD_ID);
+//     if (table !== null) {
+//         table.remove();
+//     }
+//     // Create empty chess board HTML:
+//     table = document.createElement('table');
+//     table.id = CHESS_BOARD_ID;
+//     document.body.appendChild(table);
+//     for (let row = 0; row < BOARD_SIZE; row++) {
+//         const rowElement = table.insertRow();
+//         for (let col = 0; col < BOARD_SIZE; col++) {
+//             const cell = rowElement.insertCell();
+//             if ((row + col) % 2 === 0) {
+//                 cell.className = 'light-cell';
+//             } else {
+//                 cell.className = 'dark-cell';
+//             }
+//             cell.addEventListener('click', () => onCellClick(row, col));
+//         }
+//     }
+//     // Add pieces images to board
+//     for (let piece of boardData.pieces) {
+//         const cell = table.rows[piece.row].cells[piece.col];
+//         addImage(cell, piece.player, piece.type);
+//     }
+
 
 
 
