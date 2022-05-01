@@ -1,38 +1,40 @@
-// class BoardData {
-//     constructor() {
-//         this.initPieces();
-//     }
+/*----- Checkers board - Create Checkers Board  ------*/
+const BOARD_SIZE = 8;
+const WHITE_TYPE = 'white';
+const BLACK_TYPE = 'black';
 
-//     /*------ Create list of pieces (32 total)------ */
-//     initPieces() {
-//         this.pieces = [];
+let table;
 
-//         for (let i = 0; i < BOARD_SIZE; i++) {
-//             this.pieces.push(new Piece(0, i, PIECES[i], WHITE_PLAYER));
-//             this.pieces.push(new Piece(1, i, PAWN, WHITE_PLAYER));
-//             this.pieces.push(new Piece(6, i, PAWN, BLACK_PLAYER));
-//             this.pieces.push(new Piece(7, i, PIECES[i], BLACK_PLAYER));
-//         }
-//     }
+function createCeckersBoard() {
+    const table = document.createElement('table');
+    document.body.appendChild(table);
+    for (i = 0; i < BOARD_SIZE; i++) {     // 0-7  -->
+        const row = table.insertRow();
+        for (j = 0; j < BOARD_SIZE; j++) {     // 0-7 -->
+            const cell = row.insertCell();
+            cell.id = 'cell-' + i.toString() + "_" + j.toString();
+            if ((i + j) % 2 === 0) {          // 0+0%2=0 light, 1+0%2=0 dark
+                cell.className = 'light-cell';
+            } else {
+                cell.className = 'dark-cell';
+            }
+            cell.addEventListener('click', onCellClick);
+
+            /*------------ Creating checkers pieces for 2 players ------------*/
+            if (i < 3 && cell.className === 'dark-cell') {
+                addImage(cell, BLACK_TYPE, 'pawn')
+            } else if (i > 4 && cell.className === 'dark-cell') {
+                addImage(cell, WHITE_TYPE, 'pawn')
+            }
+        }
+    }
+}
+
+function addImage(cell, type, name) {
+    const image = document.createElement('img');
+    image.src = 'images/' + type + '/' + name + '.png';
+    cell.appendChild(image);
+}
 
 
-//     removePiece(row, col) {
-//         for (let i = 0; i < this.pieces.length; i++) {
-//             const piece = this.pieces[i];
-//             if (piece.row === row && piece.col === col) {
-//                 // Remove piece at index i
-//                 this.pieces.splice(i, 1);
-//                 return piece;
-//             }
-//         }
-//     }
-
-//     isEmpty(row, col) {
-//         return this.getPiece(row, col) === undefined;
-//     }
-
-//     isPlayer(row, col, player) {
-//         const piece = this.getPiece(row, col);
-//         return piece !== undefined && piece.player === player;
-//     }
-// }
+window.addEventListener('load', createCeckersBoard);

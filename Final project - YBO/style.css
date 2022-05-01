@@ -8,9 +8,15 @@ body {
     text-align: center;
 }
 
-table {
-    margin: 100px;
+table.center {
+    height: auto;
 }
+
+tr,
+td {
+    text-align: center;
+}
+
 
 .cell {
     height: 200px;
