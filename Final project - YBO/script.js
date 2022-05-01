@@ -8,7 +8,20 @@ const KING = 'king';
 
 let game;
 let selectedCell;
-let table;
+
+function onCellClick(e) {
+    if (selectedCell !== undefined)
+        selectedCell.classList.remove('selected');
+
+    selectedCell = e.currentTarget;
+    selectedCell.classList.add('selected');
+}
+
+function addImage(cell, type, name) {
+    const image = document.createElement('img');
+    image.src = 'images/' + type + '/' + name + '.png';
+    cell.appendChild(image);
+}
 
 function createCeckersBoard() {
     const table = document.createElement('table');
@@ -35,76 +48,6 @@ function createCeckersBoard() {
     }
 }
 
-function addImage(cell, type, name) {
-    const image = document.createElement('img');
-    image.src = 'images/' + type + '/' + name + '.png';
-    cell.appendChild(image);
-}
 
 
 window.addEventListener('load', createCeckersBoard);
-
-
-
-// Clear all previous possible moves
-function tryUpdateSelectedPiece(row, col) {
-    for (let i = 0; i < BOARD_SIZE; i++) {
-        for (let j = 0; j < BOARD_SIZE; j++) {
-            table.rows[i].cells[j].classList.remove('possible-move');
-            table.rows[i].cells[j].classList.remove('selected');
-        }
-    }
-    // Show possible moves
-    const piece = game.boardData.getPiece(row, col);
-    if (piece !== undefined) {
-        let possibleMoves = game.getPossibleMoves(piece);
-        for (let possibleMove of possibleMoves) {
-            const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
-            cell.classList.add('possible-move');
-        }
-    }
-
-    table.rows[row].cells[col].classList.add('selected');
-    selectedPiece = piece;
-}
-
-function onCellClick(e) {
-    if (selectedCell !== undefined)
-        selectedCell.classList.remove('selected');
-
-    selectedCell = e.currentTarget;
-    selectedCell.classList.add('selected');
-}
-
-function startGame() {
-    startButton.destroy();
-    ball.body.velocity.set(150, -150);
-    playing = true;
-}
-
-startButton = game.add.button(game.world.width*0.5, game.world.height*0.5, 'button', startGame, this, 1, 0, 2);
-startButton.anchor.set(0.5);
-
-
-
-
-
-
-
-/*-------------- TODO - Add optional move!!! --------------*/
-
-// // Add pieces images to board
-// for (let piece of boardData.pieces) {
-//     const cell = table.rows[piece.row].cells[piece.col];
-//     addImage(cell, piece.player, piece.type);
-// }
-
-// if (game.winner !== undefined) {
-//     const winnerPopup = document.createElement('div');
-//     // black -> B + lack -> Black
-//     const winner = game.winner.charAt(0).toUpperCase() + game.winner.slice(1);
-//     winnerPopup.textContent = winner + ' player wins!';
-//     winnerPopup.classList.add('winner-dialog');
-//     table.appendChild(winnerPopup)
-
-

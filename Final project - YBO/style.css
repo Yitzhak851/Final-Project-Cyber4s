@@ -1,5 +1,5 @@
 h1 {
-    font-size: xx-large;
+    font-size: 100px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     position: relative;
 }
@@ -8,21 +8,10 @@ body {
     text-align: center;
 }
 
-table.center {
+table {
     height: auto;
-}
-
-tr,
-td {
-    text-align: center;
-}
-
-
-.cell {
-    height: 200px;
-    width: 200px;
-    border: 1px solid black;
-    border-style: inset;
+    margin: auto;
+    width: auto;
 }
 
 .dark-cell {
