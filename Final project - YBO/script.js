@@ -3,10 +3,21 @@ const BOARD_SIZE = 8;
 const WHITE_TYPE = 'white';
 const BLACK_TYPE = 'black';
 
+let selectedCell;
+
 function addImage(cell, type, name) {
     const image = document.createElement('img');
     image.src = 'images/' + type + '/' + name + '.png';
     cell.appendChild(image);
+}
+
+function onCellClick (e){
+    console.log(e.currentTarget);
+    if (selectedCell !== undefined)
+        selectedCell.classList.remove('selected');
+
+    selectedCell = e.currentTarget;
+    selectedCell.classList.add('selected');
 }
 
 function createCeckersBoard() {
@@ -22,6 +33,8 @@ function createCeckersBoard() {
             } else {
                 cell.className = 'dark-cell';
             }
+            cell.addEventListener('click', onCellClick);
+
             /*------------ Creating checkers pieces for 2 players ------------*/
             if ( i < 3 && cell.className === 'dark-cell') {
                 addImage(cell, BLACK_TYPE, 'pawn')
