@@ -1,45 +1,34 @@
-/*----- Create Checkers Board  ------*/
+/*----- Checkers board - Create Checkers Board  ------*/
 const BOARD_SIZE = 8;
-let center = document.createElement('center');
-let CheckersTable = document.createElement('table');
+const WHITE_TYPE = 'white';
+const BLACK_TYPE = 'black';
 
-for (let i = 0; i < BOARD_SIZE; i++) {
+function addImage(cell, type, name) {
+    const image = document.createElement('img');
+    image.src = 'images/' + type + '/' + name + '.png';
+    cell.appendChild(image);
+}
 
-    let tr = document.createElement('tr');
-
-    for (let j = 0; j < BOARD_SIZE; j++) {
-        var td = document.createElement('td');
-
-        if ((i + j) % 2 == 0) {
-            td.setAttribute('class', 'cell light-cell');
-            tr.appendChild(td);
-        }
-
-        else {
-            td.setAttribute('class', 'cell dark-cell');
-            tr.appendChild(td);
+function createCeckersBoard() {
+    const table = document.createElement('table');
+    document.body.appendChild(table);
+    for (i = 0; i < BOARD_SIZE; i++) {     // 0-7  -->
+        const row = table.insertRow();
+        for (j = 0; j < BOARD_SIZE; j++) {     // 0-7 -->
+            const cell = row.insertCell();
+            cell.id = 'cell-' + i.toString() + "_" + j.toString();
+            if ((i + j) % 2 === 0) {          // 0+0%2=0 light, 1+0%2=0 dark
+                cell.className = 'light-cell';
+            } else {
+                cell.className = 'dark-cell';
+            }
+            /*------------ Creating checkers pieces for 2 players ------------*/
+            if ( i < 3 && cell.className === 'dark-cell') {
+                addImage(cell, BLACK_TYPE, 'pawn')
+            } else if ( i > 4 && cell.className === 'dark-cell') {
+                    addImage(cell, WHITE_TYPE, 'pawn')
+            }
         }
     }
-
-    CheckersTable.appendChild(tr);
 }
-center.appendChild(CheckersTable);
-
-CheckersTable.setAttribute('cellspacing', '0');
-CheckersTable.setAttribute('width', '400px');
-document.body.appendChild(center);
-
-
-
-
-
-
-// const WHITE_PLAYER = 'white';
-// const BLACK_PLAYER = 'black';
-// const PAWN = 'pawn';
-// const ROOK = 'rook';
-// const BISHOP = 'bishop';
-// const KING = 'king';
-// const CHECKERS_BOARD_ID = 'checkers-board';
-
-// let table;
+window.addEventListener('load', createCeckersBoard);
