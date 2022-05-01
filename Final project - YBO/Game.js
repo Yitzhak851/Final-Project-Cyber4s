@@ -5,7 +5,6 @@
 //         this.winner = undefined;
 //     }
 
-//     // Tries to actually make a move. Returns true if successful.
 //     tryMove(piece, row, col) {
 //         const possibleMoves = this.getPossibleMoves(piece);
 
@@ -17,7 +16,6 @@
 //                 if (removedPiece !== undefined && removedPiece === KING) {
 //                     this.winner = piece.player;
 //                 }
-
 //                 this.currentPlayer = piece.getOpponent();
 //                 return true;
 //             }
