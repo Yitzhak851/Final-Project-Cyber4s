@@ -3,6 +3,8 @@ h1 {
     font-size: 100px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     position: relative;
+    border: 30px coral;
+    content: 30px green;
 }
 #btn1{
     margin: 20px;
@@ -10,9 +12,11 @@ h1 {
     content: 25px;
     color: blue;
 }
+
 body {
     text-align: center;
 }
+
 table {
     height: auto;
     margin: auto;
@@ -32,20 +36,4 @@ table {
 }
 .selected {
     background-color: aquamarine;
-}
-
-
-/* .alert.info {
-    background-color: #2196F3;
-    position: absolute;
-    position: center;
-    font-family: Arial, Helvetica, sans-serif;
-    width: 700px;
-    height: 150px;
-    left: 40%;
-} */
-
-
-.closebtn:hover {
-    color: black;
 }
