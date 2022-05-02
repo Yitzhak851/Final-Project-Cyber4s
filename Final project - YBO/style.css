@@ -1,42 +1,39 @@
+/* HTML - desigan */
 h1 {
     font-size: 100px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     position: relative;
 }
-
 #btn1{
     margin: 20px;
     border: 30px;
     content: 25px;
     color: blue;
 }
-
-
 body {
     text-align: center;
 }
-
 table {
     height: auto;
     margin: auto;
     width: auto;
 }
 
+/* Cell desigan */
 .dark-cell {
     background-color: rgb(94, 8, 8);
     height: 100px;
     width: 100px;
 }
-
 .light-cell {
     background-color: rgb(226, 71, 71);
     height: 100px;
     width: 100px;
 }
-
 .selected {
     background-color: aquamarine;
 }
+
 
 /* .alert.info {
     background-color: #2196F3;
