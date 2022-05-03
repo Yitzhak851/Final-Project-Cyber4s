@@ -8,16 +8,22 @@
 
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script defer src="script.js"></script>
-    <title>Checkers</title>
+    <title>Checkers Game YBO</title>
 </head>
 
 <body>
+
     <h1> Checkers game: YBO</h1>
-    <div class="alert info">
-        <h2>Welcome! This is a checkers game. For play push the 'START' button : </h2>
-    </div>
+
+    <h2>Welcome! This is a checkers game. For play push the 'START' button : </h2>
+    <button onclick="onClickStart()">Click here</button>
+
+
 
     <main>
+        <div class="white-turn-text mobile"> White turn </div>
+        <div class="black-turn-text mobile"> Black turn </div>
+        
         <table>
             <tr>
                 <td class="lightCell"></td>
@@ -125,6 +131,13 @@
             </tr>
         </table>
     </main>
+
+    <div class="desktop">
+        <div class="white-turn-text"> White turn </div>
+        <p id="divider">|</p>
+        <div class="black-turn-text"> Blacks turn</div>
+    </div>
+
 </body>
 
 </html>

@@ -86,3 +86,20 @@ p {
 span {
     display: inline-block;
 }
+
+.king.white-piece {
+    background-color: palevioletred;
+    border: 5px solid black;
+    border-radius: 50px;
+}
+
+.king.black-piece {
+    background-color: rgb(231, 167, 28);
+    border: 5px solid black;
+    border-radius: 50px;
+}
+
+.desktop {
+    margin: 0;
+    width: 100%;
+}
