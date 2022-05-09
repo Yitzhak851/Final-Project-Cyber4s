@@ -11,11 +11,13 @@ const board = [
     20, null, 21, null, 22, null, 23, null
 ]
 
+const DOWN_LEFT_MOVE = 7;
+
 /*----------Storage of variables - DOM---------- */
 const cells = document.querySelectorAll("td");
 let whitePieces = document.querySelectorAll("p");
 let blacksPieces = document.querySelectorAll("span")
-const whiteTurnText = document.querySelectorAll(".white-turn-text");
+const whiteTurnText = document.getElementById("white-turn-text");
 const blackTurntext = document.querySelectorAll(".black-turn-text");
 const divider = document.querySelector("#divider");
 
@@ -72,41 +74,43 @@ function onClickStart() {
 function makeMove(number) {
     document.getElementById(selectedPiece.pieceId).remove();
     cells[selectedPiece.indexOfBoardPiece].innerHTML = "";
-    if (turn) {
-        if (selectedPiece.isKing) {
-            cells[selectedPiece.indexOfBoardPiece + number].innerHTML = `<p class="white-piece king" id="${selectedPiece.pieceId}"></p>`;
-            whitePieces = document.querySelectorAll("p");
-        } else {
+    const color = turn ? "white" : "black";
+    const tag = color === "white" ? "p" : "span";
+    const i = selectedPiece.isKing ? "king" : "";
 
-            cells[selectedPiece.indexOfBoardPiece + number].innerHTML = `<p class="white-piece" id="${selectedPiece.pieceId}"></p>`;
-            whitePieces = document.querySelectorAll("p");
-        }
-    } else {
-        if (selectedPiece.isKing) {
-            cells[selectedPiece.indexOfBoardPiece + number].innerHTML = `<span class="black-piece king" id="${selectedPiece.pieceId}"></span>`;
-            blacksPieces = document.querySelectorAll("span");
-        } else {
-            cells[selectedPiece.indexOfBoardPiece + number].innerHTML = `<span class="black-piece" id="${selectedPiece.pieceId}"></span>`;
-            blacksPieces = document.querySelectorAll("span");
-        }
-    }
+    cells[selectedPiece.indexOfBoardPiece + number].innerHTML = 
+    `<${tag} class="${color}-piece ${i}" id="${selectedPiece.pieceId}"></${tag}>`;
+ 
+    whitePieces = document.querySelectorAll(tag);
+    blacksPieces = document.querySelectorAll(tag);
 
     let indexOfPiece = selectedPiece.indexOfBoardPiece
     if (number === 14 || number === -14 || number === 18 || number === -18) {
-        changeData(indexOfPiece, indexOfPiece + number, indexOfPiece + number / 2);
+        changeData(indexOfPiece, indexOfPiece + number, ndexOfPiece + number / 2i);
     } else {
         changeData(indexOfPiece, indexOfPiece + number);
     }
+}
+
+function isWhitePiece(elementID){
+    return elementID < 12;
+}
+const inBottomRow = (index) => {
+    return index >= 57;
+}
+
+const inTopRow = (index) => {
+    return index <= 7;
 }
 
 // (2) Changes the board states data on the back end + add KING
 function changeData(indexOfBoardPiece, modifiedIndex, removePiece) {
     board[indexOfBoardPiece] = null;
     board[modifiedIndex] = parseInt(selectedPiece.pieceId);
-    if (turn && selectedPiece.pieceId < 12 && modifiedIndex >= 57) {
+    if (whitesTurn && isWhitePiece(selectedPiece.pieceId) && inBottomRow(modifiedIndex)) {
         document.getElementById(selectedPiece.pieceId).classList.add("king")
     }
-    if (turn === false && selectedPiece.pieceId >= 12 && modifiedIndex <= 7) {
+    if (!turn && selectedPiece.pieceId >= 12 && modifiedIndex <= 7) {
         document.getElementById(selectedPiece.pieceId).classList.add("king");
     }
     if (removePiece) {
@@ -125,17 +129,15 @@ function changeData(indexOfBoardPiece, modifiedIndex, removePiece) {
     removeEventListeners();
 }
 
+const removeListener = element => {
+    element.removeEventListener("click", getPlayerPieces);
+}
+
 // (3) removes the 'onClick' event listeners for pieces
 function removeEventListeners() {
-    if (turn) {
-        for (let i = 0; i < whitePieces.length; i++) {
-            whitePieces[i].removeEventListener("click", getPlayerPieces);
-        }
-    } else {
-        for (let i = 0; i < blacksPieces.length; i++) {
-            blacksPieces[i].removeEventListener("click", getPlayerPieces);
-        }
-    }
+    const pieces = turn ? whitePieces : blacksPieces;
+    pieces.forEach(removeListener);
+
     checkForWin();
 }
 
@@ -191,9 +193,9 @@ function getPlayerPieces() {
 
 // (2) Removes possible moves from old selected piece 
 function removeCellonclick() {
-    for (let i = 0; i < cells.length; i++) {
-        cells[i].removeAttribute("onclick");
-    }
+    cells.forEach(cell => {
+        cell.removeAttribute("onClick");
+    })
 }
 
 // (3) Resets borders to default
@@ -210,9 +212,9 @@ function resetSelectedPieceProperties() {
     selectedPiece.pieceId = -1;
     selectedPiece.pieceId = -1;
     selectedPiece.isKing = false;
-    selectedPiece.seventhSpace = false;
+    selectedPiece.downLeftMoveAvailable = false;
     selectedPiece.ninthSpace = false;
-    selectedPiece.fourteenthSpace = false;
+    selectedPiece.downLeftJumpMoveAvailable = false;
     selectedPiece.eighteenthSpace = false;
     selectedPiece.minusSeventhSpace = false;
     selectedPiece.minusNinthSpace = false;
@@ -234,85 +236,11 @@ function isPieceKing() {
     } else {
         selectedPiece.isKing = false;
     }
+    checkIfJumpAvailable();
     getAvailableSpaces();
 }
 
-// (7) gets the moves that the selected piece can make
-function getAvailableSpaces() {
-    if (board[selectedPiece.indexOfBoardPiece + 7] === null &&
-        cells[selectedPiece.indexOfBoardPiece + 7].classList.contains("noPieceHere") !== true) {
-        selectedPiece.seventhSpace = true;
-    }
-    if (board[selectedPiece.indexOfBoardPiece + 9] === null &&
-        cells[selectedPiece.indexOfBoardPiece + 9].classList.contains("noPieceHere") !== true) {
-        selectedPiece.ninthSpace = true;
-    }
-    if (board[selectedPiece.indexOfBoardPiece - 7] === null &&
-        cells[selectedPiece.indexOfBoardPiece - 7].classList.contains("noPieceHere") !== true) {
-        selectedPiece.minusSeventhSpace = true;
-    }
-    if (board[selectedPiece.indexOfBoardPiece - 9] === null &&
-        cells[selectedPiece.indexOfBoardPiece - 9].classList.contains("noPieceHere") !== true) {
-        selectedPiece.minusNinthSpace = true;
-    }
-    checkAvailableJumpSpaces();
-}
 
-// (8) gets the moves that the selected piece can jump
-function checkAvailableJumpSpaces() {
-    if (turn) {
-        if (board[selectedPiece.indexOfBoardPiece + 14] === null
-            && cells[selectedPiece.indexOfBoardPiece + 14].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece + 7] >= 12) {
-            selectedPiece.fourteenthSpace = true;
-            disableNonJumpMoves();
-        }
-        if (board[selectedPiece.indexOfBoardPiece + 18] === null
-            && cells[selectedPiece.indexOfBoardPiece + 18].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece + 9] >= 12) {
-            selectedPiece.eighteenthSpace = true;
-            disableNonJumpMoves();
-        }
-        if (board[selectedPiece.indexOfBoardPiece - 14] === null
-            && cells[selectedPiece.indexOfBoardPiece - 14].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece - 7] >= 12) {
-            selectedPiece.minusFourteenthSpace = true;
-            disableNonJumpMoves();
-        }
-        if (board[selectedPiece.indexOfBoardPiece - 18] === null
-            && cells[selectedPiece.indexOfBoardPiece - 18].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece - 9] >= 12) {
-            selectedPiece.minusEighteenthSpace = true;
-            disableNonJumpMoves();
-        }
-    } else {
-        if (board[selectedPiece.indexOfBoardPiece + 14] === null
-            && cells[selectedPiece.indexOfBoardPiece + 14].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece + 7] < 12 && board[selectedPiece.indexOfBoardPiece + 7] !== null) {
-            selectedPiece.fourteenthSpace = true;
-            disableNonJumpMoves();
-        }
-        if (board[selectedPiece.indexOfBoardPiece + 18] === null
-            && cells[selectedPiece.indexOfBoardPiece + 18].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece + 9] < 12 && board[selectedPiece.indexOfBoardPiece + 9] !== null) {
-            selectedPiece.eighteenthSpace = true;
-            disableNonJumpMoves();
-        }
-        if (board[selectedPiece.indexOfBoardPiece - 14] === null && cells[selectedPiece.indexOfBoardPiece - 14].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece - 7] < 12
-            && board[selectedPiece.indexOfBoardPiece - 7] !== null) {
-            selectedPiece.minusFourteenthSpace = true;
-            disableNonJumpMoves();
-        }
-        if (board[selectedPiece.indexOfBoardPiece - 18] === null && cells[selectedPiece.indexOfBoardPiece - 18].classList.contains("noPieceHere") !== true
-            && board[selectedPiece.indexOfBoardPiece - 9] < 12
-            && board[selectedPiece.indexOfBoardPiece - 9] !== null) {
-            selectedPiece.minusEighteenthSpace = true;
-            disableNonJumpMoves();
-        }
-    }
-    checkPieceConditions();
-}
 
 function disableNonJumpMoves(){
     selectedPiece.seventhSpace = false;
@@ -321,6 +249,94 @@ function disableNonJumpMoves(){
     selectedPiece.minusNinthSpace = false;
 }
 
+let jumpAvailable = false;
+blacksPieces.forEach(piece => {
+    jumpAvailable = checkAvailableJumpSpaces(piece);
+});
+
+// (6.5) find if a jump is avaolable in all pieces, if there is, set jumpAvailable to true.
+
+// (7) gets the moves that the selected piece can make
+function getAvailableSpaces() {
+    const moves = [ 
+        [7, selectedPiece.seventhSpace], 
+        [9, selectedPiece.ninthSpace], 
+        [-7, selectedPiece.minusSeventhSpace], 
+        [-9, selectedPiece.minusNinthSpace]
+    ];
+
+    moves.forEach(movesPair => {
+        movesPair[1] = CheckIfPossible(movesPair[0]) && !jumpAvailable;
+    })
+
+    checkAvailableJumpSpaces(selectedPiece.indexOfBoardPiece);
+}
+
+// (8) gets the moves that the selected piece can jump
+function checkAvailableJumpSpaces(index) {
+    [14, selectedPiece.fourteenthSpace]
+
+    selectedPiece.fourteenthSpace = 
+        (board[selectedPiece.indexOfBoardPiece + 14] === null
+            && cells[selectedPiece.indexOfBoardPiece + 14].classList.contains("noPieceHere") !== true
+            && getAvailableSpaces(color));
+
+
+    if (turn) {
+        if (board[selectedPiece.indexOfBoardPiece + 14] === null
+            && cells[selectedPiece.indexOfBoardPiece + 14].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece + DOWN_LEFT_MOVE] >= 12) {
+
+            selectedPiece.fourteenthSpace = true;
+        }
+        if (board[selectedPiece.indexOfBoardPiece + 18] === null
+            && cells[selectedPiece.indexOfBoardPiece + 18].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece + 9] >= 12) {
+            selectedPiece.eighteenthSpace = true;
+
+        }
+        if (board[selectedPiece.indexOfBoardPiece - 14] === null
+            && cells[selectedPiece.indexOfBoardPiece - 14].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece - DOWN_LEFT_MOVE] >= 12) {
+            selectedPiece.minusFourteenthSpace = true;
+
+        }
+        if (board[selectedPiece.indexOfBoardPiece - 18] === null
+            && cells[selectedPiece.indexOfBoardPiece - 18].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece - 9] >= 12) {
+            selectedPiece.minusEighteenthSpace = true;
+        }
+    } else {
+        if (board[selectedPiece.indexOfBoardPiece + 14] === null
+            && cells[selectedPiece.indexOfBoardPiece + 14].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece + DOWN_LEFT_MOVE] < 12 && board[selectedPiece.indexOfBoardPiece + 7] !== null) {
+            selectedPiece.fourteenthSpace = true;
+
+        }
+        if (board[selectedPiece.indexOfBoardPiece + 18] === null
+            && cells[selectedPiece.indexOfBoardPiece + 18].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece + 9] < 12 && board[selectedPiece.indexOfBoardPiece + 9] !== null) {
+            selectedPiece.eighteenthSpace = true;
+            disableNonJumpMoves();
+
+        }
+        if (board[selectedPiece.indexOfBoardPiece - 14] === null && cells[selectedPiece.indexOfBoardPiece - 14].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece - 7] < 12
+            && board[selectedPiece.indexOfBoardPiece - 7] !== null) {
+            selectedPiece.minusFourteenthSpace = true;
+            disableNonJumpMoves();
+
+        }
+        if (board[selectedPiece.indexOfBoardPiece - 18] === null && cells[selectedPiece.indexOfBoardPiece - 18].classList.contains("noPieceHere") !== true
+            && board[selectedPiece.indexOfBoardPiece - 9] < 12
+            && board[selectedPiece.indexOfBoardPiece - 9] !== null) {
+            selectedPiece.minusEighteenthSpace = true;
+            disableNonJumpMoves();
+
+        }
+    }
+    checkPieceConditions();
+}
 
 // (9) restricts movement if the piece is a king
 function checkPieceConditions() {
@@ -380,8 +396,5 @@ function giveCellsClick() {
         cells[selectedPiece.indexOfBoardPiece - 18].setAttribute("onclick", "makeMove(-18)");
     }
 }
-
-
-
 
 givePiecesEventListeners();
